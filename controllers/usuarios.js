@@ -13,7 +13,7 @@ const getUsuarios = async( req, res ) => {
     });
 }
 
-const crearUsuario = async( req, res = response ) => {
+const createUsuario = async( req, res = response ) => {
 
     const { email, password } = req.body;
 
@@ -139,7 +139,7 @@ const deleteUsuario = async ( req, res = response ) => {
 
 module.exports = {
     getUsuarios,
-    crearUsuario,
+    createUsuario,
     updateUsuario,
     deleteUsuario
 }
