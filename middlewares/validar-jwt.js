@@ -20,7 +20,7 @@ const validarJWT = (req, res, next) => {
         req.uid = uid;
         next();
 
-        console.log(uid);
+        console.log(uid + " uid en validar-jwt.js");
     } catch (error) {
         
         return res.status(400).json({
