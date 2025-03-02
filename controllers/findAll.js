@@ -27,6 +27,39 @@ const [findUsuarios, findhospitals, findmedicos] =  await Promise.all([
     })
 }
 
+const getAllCollection = async( req, res = response ) => {
+    const table = req.params.table;
+    const findParam = req.params.findParam;
+    const regExp = new RegExp ( findParam, 'i');
+    let result = [];
+
+    if(table === 'medicos'){
+        result = await Medico.find({ nombre: regExp  })
+                                .populate( 'usuario', 'nombre img')
+                                .populate( 'hospital', 'nombre img');
+
+    }else if( table === 'hospitales'){
+        result =  await Hospital.find({ nombre: regExp })
+                                .populate( 'usuario', 'nombre img');
+
+    }else if ( table === 'usuarios'){
+        result =  await Usuario.find({ nombre: regExp })
+
+    }else {
+        return res.status(400).json({
+            ok: false,
+            msg: 'La tabla debe ser medicos, hospitales o usuarios'
+        })
+    }
+    
+        res.json({
+            ok: true,
+            result,
+            msg: 'getAllCollection'
+        })
+    }
+
 module.exports = { 
-    getAll
+    getAll,
+    getAllCollection
  };
