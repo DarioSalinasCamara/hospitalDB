@@ -28,7 +28,7 @@ const fileUpload = ( req, res = response) => {
         });
     }
 
-    const file = req.file.imagen;
+    const file = req.files.imagen;
     const splitName = file.name.split('.');
     const fileExtension = splitName[splitName.length - 1];
 
@@ -46,7 +46,7 @@ const fileUpload = ( req, res = response) => {
     const fileName = `${ uuidv4() }.${ fileExtension }`;
 
     //Ruta donde guardar los archivos
-    const uploadPath = `./uploads/${ type }`
+    const uploadPath = `./uploads/${ type }/${fileName}`
 
     //Mover archivo al server
     file.mv(uploadPath, function(err) {
