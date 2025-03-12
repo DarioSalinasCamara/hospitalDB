@@ -1,19 +1,23 @@
+const path = require('path');
+const fs = require('fs');
+
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
+const { updateImage } = require('../helpers/updateImage');
 
 
-const fileUpload = ( req, res = response) => {
+const fileUpload = (req, res = response) => {
 
     const type = req.params.type;
     const id = req.params.id;
 
     //Validar el tipo.
-    const typeValidation = [ 'hospitales', 'medicos', 'usuarios' ];
-    if( !typeValidation.includes(type)){
+    const typeValidation = ['hospitales', 'medicos', 'usuarios'];
+    if (!typeValidation.includes(type)) {
         return res.status(400).json({
 
             ok: false,
-            msg: 'Tipo introducido no valido, los tipos validos son: médico, hospital o usuario'
+            msg: 'Tipo introducido no valido, los tipos validos son: medico, hospital o usuario'
 
         });
     }
@@ -24,7 +28,7 @@ const fileUpload = ( req, res = response) => {
         return res.status(400).json({
             ok: false,
             msg: 'No hay archivo'
-            
+
         });
     }
 
@@ -34,8 +38,8 @@ const fileUpload = ( req, res = response) => {
 
     //Validar extension del archivo
     const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
-    if( !validExtensions.includes( fileExtension )){
-        
+    if (!validExtensions.includes(fileExtension)) {
+
         return res.status(400).json({
             ok: false,
             msg: 'Tipo de imagen no valido, tipos validos: png, jpg, jpeg y gif'
@@ -50,24 +54,41 @@ const fileUpload = ( req, res = response) => {
 
     //Mover archivo al server
     file.mv(uploadPath, function(err) {
-        if (err){
+        if (err) {
             console.log(err);
             return res.status(500).json({
                 ok: false,
                 msg: 'Error al mover la imagen'
             });
         }
-    
-        res.json ({
+
+        updateImage(type, id, fileName);
+
+        res.json({
             ok: true,
             msg: 'Archivo subido correctamente',
             fileName
         });
-      });
+    });
 
 }
 
+const fileDownload = (req, res = response) => {
+
+    const type = req.params.type;
+    const idImg = req.params.idImg;
+
+    const pathImg = path.join(__dirname, `../uploads/${ type }/${ idImg }`);
+
+    if (fs.existsSync(pathImg)) {
+        res.sendFile(pathImg);
+    }else {
+        const pathImg = path.join(__dirname, `../uploads/no-img.png`);
+        res.sendFile(pathImg);
+    }
+}
 
 module.exports = {
-    fileUpload
+    fileUpload,
+    fileDownload
 }
