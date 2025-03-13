@@ -54,13 +54,37 @@ const deleteHospital = ( req, res = response ) => {
 
 }
 
-const updateHospital = ( req, res = response ) => {
+const updateHospital = async( req, res = response ) => {
 
-    res.json({
-        ok: true,
-        msg: 'actualizarHospital'
-    })
+    const idHospital = req.params.id;
 
+    try {
+
+        const hospital = await Hospital.findById(idHospital);
+
+        if(!hospital){
+            return res.json({
+                ok: false,
+                msg: 'actualizarHospital, id de hospital no encontrada en BBDD'
+            });
+        }
+
+        
+
+        res.json({
+            ok: true,
+            msg: 'actualizarHospital'
+        })
+        
+    } catch (error) {
+
+        console.log(error);
+        res.status({
+            ok: false,
+            msg: 'actualizarHospital'
+        })
+        
+    }
 }
 
 
