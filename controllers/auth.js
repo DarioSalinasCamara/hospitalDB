@@ -65,6 +65,7 @@ const googleSingIn = async(req, res = response) => {
                 google: true
             });
         } else {
+            
             usuario = usuarioDB;
             usuario.google = true;
         }
@@ -94,8 +95,22 @@ const googleSingIn = async(req, res = response) => {
     }
 }
 
+const renewJWT = async ( res, req ) => {
+
+    const uid = req.uid;
+
+    const token = await generarJWT(usuario.id);
+
+    res.json({
+        ok: true,
+        msg: 'Token renovado'
+    });
+
+}
+
 module.exports = {
     login,
-    googleSingIn
+    googleSingIn,
+    renewJWT
 
 }
