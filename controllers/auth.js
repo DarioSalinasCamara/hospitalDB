@@ -95,15 +95,16 @@ const googleSingIn = async(req, res = response) => {
     }
 }
 
-const renewJWT = async ( res, req ) => {
+const renewJWT = async ( req, res ) => {
 
     const uid = req.uid;
 
-    const token = await generarJWT(usuario.id);
+    const token = await generarJWT( uid );
 
     res.json({
         ok: true,
-        msg: 'Token renovado'
+        uid,
+        token
     });
 
 }
