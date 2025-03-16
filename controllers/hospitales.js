@@ -45,19 +45,44 @@ const createHospital = async( req, res = response ) => {
 
 }
 
-const deleteHospital = ( req, res = response ) => {
+const deleteHospital = async( req, res = response ) => {
 
-    res.json({
-        ok: true,
-        msg: 'borrarHospital'
-    })
+    const idHospital = req.params.id;
+    
+    try {
 
+        const hospital = await Hospital.findById(idHospital);
+
+        if(!hospital){
+            return res.status(404).json({
+                ok: false,
+                msg: 'deleteHospital, id de hospital no encontrada en BBDD'
+            });
+        }
+
+        await Hospital.findByIdAndDelete( idHospital );
+
+        res.json({
+            ok: true,
+            msg: 'deleteHospital',
+            idHospital
+            
+        })
+        
+    } catch (error) {
+
+        console.log(error);
+        res.status({
+            ok: false,
+            msg: 'deleteHospital'
+        })
+    }
 }
 
 const updateHospital = async( req, res = response ) => {
 
     const idHospital = req.params.id;
-
+    
     try {
 
         const hospital = await Hospital.findById(idHospital);
@@ -69,11 +94,19 @@ const updateHospital = async( req, res = response ) => {
             });
         }
 
-        
+        const hospitalUpdate = {
+            ...req.body,
+            usuario: req.uid,
+            
+        }
+
+        const hospitalUpdated = await Hospital.findByIdAndUpdate( idHospital, hospitalUpdate, { new: true });
 
         res.json({
             ok: true,
-            msg: 'actualizarHospital'
+            msg: 'actualizarHospital',
+            hospitalUpdate: hospitalUpdated
+            
         })
         
     } catch (error) {
