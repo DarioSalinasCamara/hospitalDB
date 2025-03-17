@@ -100,12 +100,12 @@ const updateHospital = async( req, res = response ) => {
             
         }
 
-        const hospitalUpdated = await Hospital.findByIdAndUpdate( idHospital, hospitalUpdate, { new: true });
+        const updateHospital = await Hospital.findByIdAndUpdate( idHospital, updateHospital, { new: true });
 
         res.json({
             ok: true,
             msg: 'actualizarHospital',
-            hospitalUpdate: hospitalUpdated
+            updateHospital: updateHospital
             
         })
         

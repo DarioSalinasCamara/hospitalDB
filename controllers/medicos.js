@@ -43,22 +43,79 @@ const createMedico = async( req, res = response ) => {
     }
 }
 
-const deleteMedico = ( req, res = response ) => {
+const deleteMedico = async( req, res = response ) => {
 
-    res.json({
-        ok: true,
-        msg: 'borrarMedicos'
-    })
+    const idMedico = req.params.id;
 
+    try {
+
+        const medico = await Medico.findById(idMedico);
+
+        if(!medico){
+            return res.status(404).json({
+                ok: false,
+                msg: 'deleteMedico, id de medico no encontrada en BBDD'
+            });
+        }
+
+        await Medico.findByIdAndDelete( idMedico );
+
+        res.json({
+            ok: true,
+            msg: 'deleteMedico',
+            idMedico
+            
+        })
+        
+    } catch (error) {
+
+        console.log(error);
+        res.status({
+            ok: false,
+            msg: 'deleteMedico'
+        })  
+    }
 }
 
-const updateMedico = ( req, res = response ) => {
+const updateMedico = async( req, res = response ) => {
 
-    res.json({
-        ok: true,
-        msg: 'actualizarMedicos'
-    })
-
+    const idMedico = req.params.id;
+        
+        try {
+    
+            const medico = await Medico.findById(idMedico);
+    
+            if(!medico){
+                return res.json({
+                    ok: false,
+                    msg: 'updateMedico, id de medico no encontrada en BBDD'
+                });
+            }
+    
+            const updateMedico = {
+                ...req.body,
+                usuario: req.uid,
+                
+            }
+    
+            const updatedMedico = await Medico.findByIdAndUpdate( idMedico, updateMedico, { new: true });
+    
+            res.json({
+                ok: true,
+                msg: 'updateMedico',
+                updatedMedico: updatedMedico
+                
+            })
+            
+        } catch (error) {
+    
+            console.log(error);
+            res.status({
+                ok: false,
+                msg: 'updateMedico'
+            })
+            
+        }
 }
 
 module.exports = {
